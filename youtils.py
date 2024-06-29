@@ -1,5 +1,5 @@
 import pyodbc
-from swagger import jsonify
+from appmvc import jsonify
 
 def send_response(message, status_code=200):
     """Fonction pour envoyer des réponses JSON standardisées."""
