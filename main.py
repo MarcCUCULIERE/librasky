@@ -32,6 +32,7 @@ def list_data(server, database, username, password):
             print("Liste des éléments dans la base de données :")
             for row in rows:
                 print(f"Quantité: {row.Quantite}, Nom: {row.Nom}, Distillerie: {row.Distillerie}, Année: {row.Année}, Age: {row.Age}, Degrés: {row.Degrés}, Date d'achat: {row.Date_achat}, Prix: {row.Prix}")
+                return rows
         else:
             print("Aucune donnée trouvée.")
     except pyodbc.Error as e:
