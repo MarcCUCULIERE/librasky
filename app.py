@@ -1,4 +1,4 @@
-from flask import Flask
+from swagger import Flask
 from views import configure_routes
 
 app = Flask(__name__)

@@ -1,5 +1,5 @@
 import pyodbc
-from flask import jsonify
+from swagger import jsonify
 
 def send_response(message, status_code=200):
     """Fonction pour envoyer des réponses JSON standardisées."""

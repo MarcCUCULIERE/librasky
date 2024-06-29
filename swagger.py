@@ -1,7 +1,7 @@
-from flask import Flask
+import swagger
 from flask_restx import Api, Resource, fields
 
-app = Flask(__name__)
+app = swagger.Flask(__name__)
 api = Api(app, version='1.0', title='API de Ma Collection',
           description='Une API simple pour gérer une collection')
 
