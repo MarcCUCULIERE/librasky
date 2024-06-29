@@ -32,4 +32,3 @@ def configure_routes(app):
         # Ici, vous appellerez la fonction de liste (similaire à votre extrait de code)
         data = ld()
         return jsonify(data), 200
-        #return jsonify({data}), 200

@@ -1,16 +1,9 @@
 import pyodbc
+import youtils
 
-# Connexion à la base de données SQL Server dans Azure
-server = 'sql-sb-marc-weu.database.windows.net'
-database = 'librasky'
-username = 'librasky'
-password = 'Aze89Rty!'
-driver = '{ODBC Driver 17 for SQL Server}'
-
-def insert_data(server, database, username, password, quantite, nom, distillerie, annee, age, degres, date_achat, prix):
-    driver = '{ODBC Driver 17 for SQL Server}'
+def insert_data(quantite, nom, distillerie, annee, age, degres, date_achat, prix):
     try:
-        conn = pyodbc.connect(f'DRIVER={driver};SERVER=tcp:{server};PORT=1433;DATABASE={database};UID={username};PWD={password}')
+        conn = youtils.connect_to_sql_server()
         cursor = conn.cursor()
         cursor.execute("INSERT INTO Collection (Quantite, Nom, Distillerie, Année, Age, Degrés, Date_achat, Prix) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", 
                    (quantite, nom, distillerie, annee, age, degres, date_achat, prix))
@@ -19,12 +12,14 @@ def insert_data(server, database, username, password, quantite, nom, distillerie
     except pyodbc.Error as e:
         print("Erreur lors de l'insertion des données:", str(e))
     finally:
-        conn.close()
+        if conn:
+            conn.close()
 
-def list_data(server, database, username, password):
-    driver = '{ODBC Driver 17 for SQL Server}'
+
+def list_data():
+    conn = None
     try:
-        conn = pyodbc.connect(f'DRIVER={driver};SERVER=tcp:{server};PORT=1433;DATABASE={database};UID={username};PWD={password}')
+        conn = youtils.connect_to_sql_server()
         cursor = conn.cursor()
         cursor.execute("SELECT Quantite, Nom, Distillerie, Année, Age, Degrés, Date_achat, Prix FROM Collection")
         rows = cursor.fetchall()
@@ -38,12 +33,13 @@ def list_data(server, database, username, password):
     except pyodbc.Error as e:
         print("Erreur lors de la récupération des données:", str(e))
     finally:
-        conn.close()
+        if conn:
+            conn.close()
 
-def update_data(server, database, username, password, nom, annee, degres, new_quantite, new_nom, new_distillerie, new_annee, new_age, new_degres, new_date_achat, new_prix):
-    driver = '{ODBC Driver 17 for SQL Server}'
+def update_data(nom, annee, degres, new_quantite, new_nom, new_distillerie, new_annee, new_age, new_degres, new_date_achat, new_prix):
+    conn = None
     try:
-        conn = pyodbc.connect(f'DRIVER={driver};SERVER=tcp:{server};PORT=1433;DATABASE={database};UID={username};PWD={password}')
+        conn = youtils.connect_to_sql_server()
         cursor = conn.cursor()
         cursor.execute("UPDATE Collection SET Quantite = ?, Nom = ?, Distillerie = ?, Année = ?, Age = ?, Degrés = ?, Date_achat = ?, Prix = ? WHERE Nom = ? AND Année = ? AND Degrés = ?", 
                        (new_quantite, new_nom, new_distillerie, new_annee, new_age, new_degres, new_date_achat, new_prix, nom, annee, degres))
@@ -55,13 +51,15 @@ def update_data(server, database, username, password, nom, annee, degres, new_qu
     except pyodbc.Error as l:
         print("Erreur lors de la mise à jour des données:", str(e))
     finally:
-        conn.close()
+        if conn:
+            conn.close()
 
 
-def delete_data(server, database, username, password, nom, annee, degre):
-    driver = '{ODBC Driver 17 for SQL Server}'
+
+def delete_data(nom, annee, degre):
+    conn = None
     try:
-        conn = pyodbc.connect(f'DRIVER={driver};SERVER=tcp:{server};PORT=1433;DATABASE={database};UID={username};PWD={password}')
+        conn = youtils.connect_to_sql_server()
         cursor = conn.cursor()
         # Delete the data based on nom, annee, and degre
         cursor.execute("DELETE FROM Collection WHERE nom = ? AND annee = ? AND degre = ?", (nom, annee, degre))
@@ -73,7 +71,9 @@ def delete_data(server, database, username, password, nom, annee, degre):
     except pyodbc.Error as e:
         print("Error while deleting data:", str(e))
     finally:
-        conn.close()
+        if conn:
+            conn.close()
+
 
 def delete_row(server, database, username, password, table_name, condition):
     """
@@ -86,10 +86,10 @@ def delete_row(server, database, username, password, table_name, condition):
     :param table_name: Nom de la table où la ligne doit être supprimée.
     :param condition: Condition à utiliser pour identifier la ligne à supprimer (ex: "id = 5").
     """
-    driver = '{ODBC Driver 17 for SQL Server}'
+    conn = None
     try:
-        conn_str = f'DRIVER={driver};SERVER=tcp:{server};PORT=1433;DATABASE={database};UID={username};PWD={password}'
-        with pyodbc.connect(conn_str) as conn:
+        conn = youtils.connect_to_sql_server()
+        with pyodbc.connect(conn) as conn:
             with conn.cursor() as cursor:
                 query = f"DELETE FROM {table_name} WHERE {condition}"
                 cursor.execute(query)
@@ -101,10 +101,10 @@ def delete_row(server, database, username, password, table_name, condition):
     except pyodbc.Error as e:
         print("Error while deleting data:", str(e))
         
-def fetch_data(server, database, username, password):
-    driver = '{ODBC Driver 17 for SQL Server}'
+def fetch_data():
+    conn = None
     try:
-        conn = pyodbc.connect(f'DRIVER={driver};SERVER=tcp:{server};PORT=1433;DATABASE={database};UID={username};PWD={password}')
+        conn = youtils.connect_to_sql_server()
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM Collection")
         data = cursor.fetchall()
@@ -131,7 +131,7 @@ if __name__ == "__main__":
         pass
     elif action.lower() == 'l':
         # Lister les données de la base de données
-        list_data(server, database, username, password)
+        list_data()
         pass
     elif action.lower() == 'u':
         # Demander à l'utilisateur de saisir les données pour identifier la ligne à mettre à jour
