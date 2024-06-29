@@ -1,5 +1,7 @@
 import pyodbc
 import youtils
+import json
+from datetime import datetime, date
 
 def insert_data(quantite, nom, distillerie, annee, age, degres, date_achat, prix):
     try:
@@ -15,7 +17,6 @@ def insert_data(quantite, nom, distillerie, annee, age, degres, date_achat, prix
         if conn:
             conn.close()
 
-
 def list_data():
     conn = None
     try:
@@ -25,9 +26,22 @@ def list_data():
         rows = cursor.fetchall()
         if rows:
             print("Liste des éléments dans la base de données :")
+            rows_as_dict = []  # Initialisez une liste vide pour stocker les dictionnaires
             for row in rows:
-                print(f"Quantité: {row.Quantite}, Nom: {row.Nom}, Distillerie: {row.Distillerie}, Année: {row.Année}, Age: {row.Age}, Degrés: {row.Degrés}, Date d'achat: {row.Date_achat}, Prix: {row.Prix}")
-                return rows
+                # Construisez un dictionnaire pour chaque ligne et ajoutez-le à la liste
+                row_dict = {
+                    "Quantite": row.Quantite, 
+                    "Nom": row.Nom, 
+                    "Distillerie": row.Distillerie, 
+                    "Année": row.Année, 
+                    "Age": row.Age, 
+                    "Degrés": row.Degrés, 
+                    "Date_achat": row.Date_achat.strftime("%Y-%m-%d") if isinstance(row.Date_achat, date) else row.Date_achat, 
+                    "Prix": row.Prix
+                }
+                rows_as_dict.append(row_dict)
+            json_data = json.dumps(rows_as_dict)  # Convertissez la liste de dictionnaires en JSON
+            return json_data
         else:
             print("Aucune donnée trouvée.")
     except pyodbc.Error as e:
