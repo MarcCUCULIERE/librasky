@@ -1,4 +1,3 @@
-from flask import request, jsonify
 from main import insert_data, list_data as ld, update_data, delete_data
 
 def configure_routes(app):
