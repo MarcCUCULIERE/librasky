@@ -40,7 +40,7 @@ def create_database_and_schema(server, database, username, password):
 
 if __name__ == "__main__":
     server = 'sql-sb-marc-weu.database.windows.net'
-    database = 'librasky'
-    username = 'librasky'
-    password = 'Aze89Rty!'
+    database = ''
+    username = ''
+    password = ''
 create_database_and_schema(server, database, username, password)
