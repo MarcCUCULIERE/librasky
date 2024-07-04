@@ -12,12 +12,12 @@ WORKDIR /app
 # Cloner le dépôt GitHub spécifique
 RUN git clone https://github.com/marccuculiere/librasky.git .
 
-# Installer les dépendances
-# Note: gcc et musl-dev sont souvent nécessaires pour compiler certaines dépendances Python lors de l'installation
-COPY requirements.txt .
-RUN apk add --no-cache build-base && \
-    pip install --no-cache-dir -r requirements.txt && \
-    apk del build-base
+# Installer les dépendances  
+COPY requirements.txt .  
+RUN apk add --no-cache build-base && \  
+    pip install --no-cache-dir -r requirements.txt  
+# Vous pouvez choisir de ne pas supprimer build-base si des dépendances le nécessitent  
+# apk del build-base  
 
 # Exposer le port sur lequel l'application va tourner
 EXPOSE 5000
