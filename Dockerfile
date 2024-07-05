@@ -15,6 +15,8 @@ RUN git clone https://github.com/marccuculiere/librasky.git .
 # Installer les dépendances  
 COPY requirements.txt .  
 
+RUN apk add -u libffi-dev
+
 RUN apk add --no-cache build-base && \  
     pip install --no-cache-dir -r requirements.txt  
 
