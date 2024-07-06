@@ -1,6 +1,7 @@
 import pyodbc
 import youtils
 import json
+import time
 from datetime import datetime, date
 from flask import Flask, request, jsonify
 from flask_restx import Api, Resource, fields
@@ -24,17 +25,35 @@ def fetch_data():
     conn = None
     try:
         conn = youtils.connect_to_sql_server()
+        if conn is None:
+            raise ConnectionError("Failed to connect to the database.")
         cursor = conn.cursor()
         cursor.execute("SELECT Quantite, Nom, Distillerie, Année, Age, Degrés, Date_achat, Prix FROM Collection")
         columns = [column[0] for column in cursor.description]
         data = [dict(zip(columns, row)) for row in cursor.fetchall()]
         return data
     except pyodbc.Error as err:
-        print(f"Erreur de base de données: {err}")
-        return []
+        app.logger.error(f"Database error: {err}")
+        return {"error": "Database operation failed"}, 500
+    except ConnectionError as e:
+        app.logger.error(f"Connection error: {e}")
+        return {"error": "Failed to connect to the database"}, 500
     finally:
         if conn:
             conn.close()
+
+# Example of a simple health check endpoint
+@api.route('/health/ping')
+class HealthCheck(Resource):
+    def get(self):
+        try:
+            conn = youtils.connect_to_sql_server()
+            if conn is None:
+                raise ConnectionError("Database connection failed")
+            return "pong", 200
+        except ConnectionError as e:
+            app.logger.error(f"Health check failed: {e}")
+            return {"status": "unhealthy"}, 503
 
 @api.route('/create')
 class InsertData(Resource):
