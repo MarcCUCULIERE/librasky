@@ -21,7 +21,7 @@ RUN apk add --no-cache build-base && \
     pip install --no-cache-dir -r requirements.txt  
 
 # Exposer le port sur lequel l'application va tourner
-EXPOSE 443
+EXPOSE 5000
 
 # Commande pour démarrer l'application
 CMD ["python", "main.py"]
