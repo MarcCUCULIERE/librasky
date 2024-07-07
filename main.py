@@ -1,5 +1,6 @@
 import pyodbc
 import youtils
+import traceback
 import json
 import time
 from datetime import datetime, date
@@ -34,9 +35,11 @@ def fetch_data():
         return data
     except pyodbc.Error as err:
         app.logger.error(f"Database error: {err}")
+        traceback.print_exc()  # Log the full stack trace
         return {"error": "Database operation failed"}, 500
     except ConnectionError as e:
         app.logger.error(f"Connection error: {e}")
+        traceback.print_exc()  # Log the full stack trace
         return {"error": "Failed to connect to the database"}, 500
     finally:
         if conn:
