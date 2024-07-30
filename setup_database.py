@@ -39,8 +39,8 @@ def create_database_and_schema(server, database, username, password):
         print("Erreur lors de la création de la table 'Collection':", str(e))
 
 if __name__ == "__main__":
-    server = 'sql-sb-marc-weu.database.windows.net'
-    database = ''
+    server = 'sql-sb-marc-weu-01.database.windows.net'
+    database = 'LIBRASKY'
     username = ''
     password = ''
 create_database_and_schema(server, database, username, password)
