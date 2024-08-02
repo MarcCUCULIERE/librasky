@@ -6,7 +6,7 @@ import time
 from datetime import datetime, date
 from flask import Flask, request, jsonify
 from flask_restx import Api, Resource, fields
-
+  
 app = Flask(__name__)
 api = Api(app, version='1.0', title='Librasky', description='Une API simple pour gerer les collections.')
 ns = api.namespace('/', description='Opérations principales')
